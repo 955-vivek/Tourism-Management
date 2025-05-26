@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='stylelogin.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>User Registration</h2>
+
+        <form method="POST">
+            <!-- Username Input -->
+            <label for="username">Username</label>
+            <input type="text" name="username" required>
+
+            <!-- Email Input -->
+            <label for="email">Email</label>
+            <input type="email" name="email" required>
+
+            <!-- Password Input -->
+            <label for="password">Password</label>
+            <input type="password" name="password" required>
+
+            <!-- Submit Button -->
+            <button type="submit">Register</button>
+        </form>
+
+        <div class="toggle-link">
+            Already have an account? <a href="/login">Login here</a>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Complaint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1 class="header-title">Tour Guide Portal</h1>
+        <p class="header-subtitle">We value your feedback</p>
+    </header>
+
+    <nav class="navigation">
+        <ul class="nav-list">
+            <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
+            <li><a href="{{ url_for('review') }}" class="nav-link">Submit a Review</a></li>
+            <li><a href="{{ url_for('helplines') }}" class="nav-link">Emergency Helplines</a></li>
+            <li><a href="{{ url_for('recommend') }}" class="nav-link">Tourist Recommendations</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2 class="section-title">Submit a Complaint</h2>
+        <form method="POST">
+            <label for="complaint_text">Your Complaint</label>
+            <textarea name="complaint_text" id="complaint_text" rows="5" required></textarea>
+            <button type="submit">Submit Complaint</button>
+        </form>
+    </main>
+
+</body>
+</html>

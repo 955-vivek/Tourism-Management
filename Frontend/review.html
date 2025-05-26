@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit a Review</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1 class="header-title">Tourist Review Portal</h1>
+        <p class="header-subtitle">Share Your Experience</p>
+    </header>
+
+    <nav class="navigation">
+        <ul class="nav-list">
+            <li><a href="{{ url_for('index') }}" class="nav-link">Home</a></li>
+            <li><a href="{{ url_for('helplines') }}" class="nav-link">Emergency Helplines</a></li>
+            <li><a href="{{ url_for('complaint') }}" class="nav-link">File Complaint</a></li>
+            <li><a href="{{ url_for('recommend') }}" class="nav-link">Tourist Recommendations</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2 class="section-title">Submit a Review</h2>
+        <form method="POST">
+            <label for="place_name">Place Name:</label>
+            <input type="text" name="place_name" required>
+
+            <label for="rating">Rating (1-5):</label>
+            <input type="number" name="rating" min="1" max="5" required>
+
+            <label for="review_text">Review:</label>
+            <textarea name="review_text" rows="4"></textarea>
+
+            <button type="submit">Submit Review</button>
+        </form>
+    </main>
+
+</body>
+</html>
