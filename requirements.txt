@@ -3,3 +3,9 @@ Flask-SQLAlchemy
 Flask-Login
 Werkzeug
 SQLAlchemy
+requests
+python-dotenv
+transformers
+huggingface-hub
+fake-useragent
+tavily
