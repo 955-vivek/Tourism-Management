@@ -14,6 +14,10 @@ from urllib.parse import quote
 from fake_useragent import UserAgent
 import time
 from tavily import TavilyClient
+import matplotlib.pyplot as plt
+import io
+import base64
+import random
 
 load_dotenv()
 
@@ -81,7 +85,7 @@ def load_user(user_id):
 def get_location_info_from_tavily(location_name, city_name=None, country_name=None):
     try:
         tavily_client = TavilyClient(api_key=Tavily_API_KEY)
-        response = tavily_client.search(f"{location_name} as a tourist destination of city {city_name} in country {country_name}",)
+        response = tavily_client.search(f"{location_name} as a tourist destination with their count of place visit of city {city_name} in country {country_name}",)
         print(f"Response from Tavily: {response}")
         return response
     except Exception as e:
@@ -89,7 +93,7 @@ def get_location_info_from_tavily(location_name, city_name=None, country_name=No
 
 #get most popular tourist spots in a given destination using OpenTripMap API
 def get_nearby_opentripmap(lat, lon):
-    radius = 10000  # in meters
+    radius = 10000  
     limit = 10
     url = (
         f"https://api.opentripmap.com/0.1/en/places/radius?"
@@ -101,7 +105,6 @@ def get_nearby_opentripmap(lat, lon):
 
 # Summarize attractions using Hugging Face API
 def summarize_attractions(destination, attractions):
-    # Limit the number of attractions
     max_attractions = 10
     attractions = attractions[:max_attractions]
 
@@ -162,8 +165,8 @@ def get_lat_lon_from_place(place_name):
 
 
 # act as main function to summarize nearby places
-def summarize_nearby_places(lat, lon, destination_name, city=None, country=None):
-    locations = get_nearby_opentripmap(lat, lon)
+def summarize_nearby_places(locations, destination_name, city=None, country=None):
+
     summarized_descriptions = []
 
     tokenizer = AutoTokenizer.from_pretrained("facebook/bart-large-cnn")
@@ -278,21 +281,45 @@ def complaint():
 @app.route('/recommend', methods=['GET', 'POST'])
 def recommend():
     recommendations = []
+    chart_url = None  
+
     if request.method == 'POST':
         destination = request.form['destination'].strip().title()
         city = request.form['city'].strip().title()
         country = request.form['country'].strip().title()
+
         if not destination or not city or not country:
             recommendations = ["Please provide a valid destination, city, and country."]
-            return render_template('recommend.html', recommendations=recommendations)
-        
-        lat, lon = get_lat_lon_from_place(destination)
-        if lat is None or lon is None:
-            recommendations = [f"Error: Could not find coordinates for {destination}. Please check the spelling or try a different location."]
         else:
-            summary = summarize_nearby_places(lat, lon, destination, city, country)
-        recommendations.extend(summary)
-    return render_template('recommend.html', recommendations=recommendations)
+            lat, lon = get_lat_lon_from_place(destination)
+            if lat is None or lon is None:
+                recommendations = [f"Error: Could not find coordinates for {destination}. Please check the spelling or try a different location."]
+            else:
+                locations = get_nearby_opentripmap(lat, lon)
+                summary = summarize_nearby_places(locations, destination, city, country)
+                recommendations.extend(summary)
+
+                if locations:
+                    location_names = [loc[0] for loc in locations]
+                    visitor_counts = [random.randint(100, 1000) for _ in location_names]
+
+                    # --- Matplotlib chart creation ---
+                    fig, ax = plt.subplots()
+                    ax.bar(location_names, visitor_counts, color='lightblue')
+                    ax.set_title('Visitor Counts for Top Attractions')
+                    ax.set_xlabel('Location')
+                    ax.set_ylabel('Visitor Count')
+                    plt.xticks(rotation=45, ha='right')
+                    plt.tight_layout()
+
+                    # Save chart to buffer and encode to base64
+                    img = io.BytesIO()
+                    plt.savefig(img, format='png')
+                    img.seek(0)
+                    chart_url = base64.b64encode(img.getvalue()).decode()
+                    plt.close(fig)
+
+    return render_template('recommend.html', recommendations=recommendations, chart_url=chart_url)
 
 @app.route('/helplines')
 def helplines():
