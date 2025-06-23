@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   </head>
   <body>
     <header>
@@ -55,6 +56,11 @@
           {% endfor %}
         </ul>
       </div>
+      {% endif %} 
+      {% if chart_url %}
+      <br>
+      <h3>Visitor Counts for Top Attractions</h3>
+      <img src="data:image/png;base64,{{ chart_url }}" alt="Visitor Chart" />
       {% endif %}
     </main>
   </body>
